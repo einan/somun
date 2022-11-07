@@ -3,8 +3,6 @@ class Test:
         self.article = article  
         self.abstract = abstract 
 
-
-
 test_file = open('finished_files/test.txt', 'r') 
 count = 0
 test_lst = []
@@ -24,15 +22,9 @@ print(test_lst[10].abstract)
 print(test_lst[10].article)
 
 import spacy
-import pytextrank
-
 nlp = spacy.load("en_core_web_sm")
 
-# add PyTextRank to the spaCy pipeline
-tr = pytextrank.TextRank()
-nlp.add_pipe(tr.PipelineComponent, name="textrank", last=True)
-
-doc = nlp(test_lst[0].article)
+# TODO: the lightweight version generates keywords by leveraging multilingual keyword extraction method and the Wiki API (for candidate entities)
 
 # examine the top-ranked phrases in the document
 for p in doc._.phrases:
@@ -62,27 +54,5 @@ reference_sentences = tokenizer.tokenize(test_lst[0].abstract)
 print(reference_sentences)
 print(len(reference_sentences))
 
-pytextrankSum = ""
-for sent in doc._.textrank.summary(limit_phrases=10, limit_sentences=len(reference_sentences)):
-    pytextrankSum = pytextrankSum + " " + str(sent)
+#TODO: the lightweight version gets vector representations by using the REST API of the pre-trained language model
 
-print(pytextrankSum)
-print("\n----\n")
-print(test_lst[0].abstract)
-
-import spacy
-import pytextrank
-
-nlp = spacy.load("en_core_web_sm")
-
-# add PyTextRank to the spaCy pipeline
-tr = pytextrank.TextRank()
-nlp.add_pipe(tr.PipelineComponent, name="textrank", last=True)
-
-def get_sum(tokenizer, article, abstract):
-    doc = nlp(article)
-    reference_sentences = tokenizer.tokenize(abstract)
-    pytextrankSum = ""
-    for sent in doc._.textrank.summary(limit_phrases=10, limit_sentences=len(reference_sentences)):
-        pytextrankSum = pytextrankSum + " " + str(sent)
-    return pytextrankSum  
