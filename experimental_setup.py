@@ -126,3 +126,40 @@ def eval_All(file_path):
     results['rouge_2'] = round(average(rouge_2_lst) * 100,2)
     results['rouge_l'] = round(average(rouge_l_lst) * 100,2)
     return results
+
+import rouge
+
+def prepare_results(p, r, f):
+    return '\t{}:\t{}: {:5.2f}\t{}: {:5.2f}\t{}: {:5.2f}'.format(metric, 'P', 100.0 * p, 'R', 100.0 * r, 'F1', 100.0 * f)
+
+def calculate_rouge155(all_modelsums, all_references):
+    apply_avg = 'Avg'
+        #apply_best = aggregator == 'Best'
+
+    evaluator = rouge.Rouge(metrics=['rouge-n', 'rouge-l', 'rouge-w'],
+                               max_n=4,
+                               limit_length=True,
+                               length_limit=100,
+                               length_limit_type='words',
+                               apply_avg=apply_avg,
+                               apply_best=False,
+                               alpha=0.5, # Default F1_score
+                               weight_factor=1.2,
+                               stemming=True)
+
+    scores = evaluator.get_scores(all_modelsums, all_references)
+    #print(scores)
+    
+    rouge_1 = 0
+    rouge_2 = 0
+    rouge_l = 0
+    for metric, results in sorted(scores.items()):
+        #print(prepare_results(results['p'], results['r'], results['f']))
+        if metric == 'rouge-1':
+            rouge_1 = results['f']
+        if metric == 'rouge-2':
+            rouge_2 = results['f']
+        if metric == 'rouge-l':
+            rouge_l = results['f']
+    #print(rouge_1 + rouge_2 + rouge_l)
+    return rouge_1, rouge_2, rouge_l
