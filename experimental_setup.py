@@ -40,8 +40,7 @@ def clean_lines(lines):
 	cleaned = [c for c in cleaned if len(c) > 0]
 	return cleaned
 
-directory = 'cnn/stories/'
-stories = load_stories(directory)
+stories = load_stories('cnn/stories/')
 print('Loaded Stories %d' % len(stories))
 
 for example in stories:
