@@ -40,7 +40,12 @@ print("Mention text\tType\tStart-End")
 for ent in en_doc.ents:
     print("{}\t{}\t{}-{}".format(ent.text, ent.type, ent.start_char, ent.end_char))
     
-# TODO: the lightweight version generates candidate entities directly from the Wiki API 
+# LIGHTWEIGHT VERSION gets candidate entities directly from the Wiki API 
+def get_wiki_entities(entry):
+  wiki_url = f"https://www.wikidata.org/w/api.php?action=wbsearchentities&search={entry}&language=en&format=json"
+  result_lst = requests.get(url).json()
+  ent_lst = list(set([result['display']['label']['value'] for result in result_lst['search']]))
+  return ent_lst
 
 #please refer to https://github.com/einan/simit/blob/main/main_idea.py for the BFS-based DEP embedding model
 import graphviz
