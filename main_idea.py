@@ -21,16 +21,28 @@ test_file.close()
 print(test_lst[10].abstract)
 print(test_lst[10].article)
 
-import spacy
-nlp = spacy.load("en_core_web_sm")
+# pip install stanza
+import stanza
+# stanza.download('en') 
+nlp = stanza.Pipeline('en')
+print(doc)
+# print(doc.entities)
 
-# TODO: the lightweight version generates keywords by leveraging multilingual keyword extraction method and the Wiki API (for candidate entities)
+# https://github.com/stanfordnlp/stanza/blob/main/demo/Stanza_Beginners_Guide.ipynb
+for i, sent in enumerate(en_doc.sentences):
+    print("[Sentence {}]".format(i+1))
+    for word in sent.words:
+        print("{:12s}\t{:12s}\t{:6s}\t{:d}\t{:12s}".format(\
+              word.text, word.lemma, word.pos, word.head, word.deprel))
+    print("")
+    
+print("Mention text\tType\tStart-End")
+for ent in en_doc.ents:
+    print("{}\t{}\t{}-{}".format(ent.text, ent.type, ent.start_char, ent.end_char))
+    
+# TODO: the lightweight version generates candidate entities directly from the Wiki API 
 
-# examine the top-ranked phrases in the document
-for p in doc._.phrases:
-    print("{:.4f} {:5d}  {}".format(p.rank, p.count, p.text))
-    print(p.chunks)
-
+#please refer to https://github.com/einan/simit/blob/main/main_idea.py for the BFS-based DEP embedding model
 import graphviz
 
 keys = list(tr.seen_lemma.keys())
